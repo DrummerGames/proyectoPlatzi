@@ -18,8 +18,6 @@
 .titulo {
     font-family: 'Fredoka One', cursive;
     color: white;
-
-
 }
 
 .seccion-personajes {
@@ -27,7 +25,6 @@
     text-align: center;
     font-size: larger;
     color: black;
-
 }
 
 
@@ -154,15 +151,13 @@
 }
 
 .css-ataque-jugador, .css-ataque-enemigo{
-
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 input {
-
-display: none 
+    display: none 
 }
 
 input:checked + label{
