@@ -1,13 +1,30 @@
-let botonPersonajeJugador = document.getElementById('boton-personaje')
-let botonFuego = document.getElementById('boton-fuego')
-let botonAgua = document.getElementById('boton-agua')
-let botonTierra = document.getElementById('boton-tierra')
-let botonReiniciar = document.getElementById("boton-reiniciar")
+//variables de la funcion IniciarJuego
+const botonFuego = document.getElementById('boton-fuego')
+const botonPersonajeJugador = document.getElementById('boton-personaje')
+const botonAgua = document.getElementById('boton-agua')
+const botonTierra = document.getElementById('boton-tierra')
+const botonReiniciar = document.getElementById("boton-reiniciar")
 
-let spanPersonajeJugador = document.getElementById("personaje-jugador")
+//variable de la funcion seleccionarPersonajeJugador
+const spanPersonajeJugador = document.getElementById("personaje-jugador")
 
-let seccionSeleccionarAtaque = document.getElementById('seleccionar-ataque')
-let seccionSeleccionarPersonaje = document.getElementById('seleccionar-personaje')
+//variables de la funcion seleccionarAtaque
+const seccionSeleccionarAtaque = document.getElementById('seleccionar-ataque')
+const seccionSeleccionarPersonaje = document.getElementById('seleccionar-personaje')
+
+
+//variables de la funcion seleccionarAtaque
+const spanvidasJugador = document.getElementById('vida-jugador')
+const spanvidasOponente = document.getElementById('vida-oponente')
+
+//variables de la funcion CrearMensaje
+const sectionMensajes = document.getElementById("resultado")
+const ataqueDelJugador = document.getElementById('ataque-del-jugador')
+const ataqueDelOponente = document.getElementById('ataque-del-oponente')
+
+//variable de la seccion CrearMensajeFinal
+const seccionReiniciar = document.getElementById('reiniciar')
+
 
 let ataqueJugador
 let ataqueOponente
@@ -33,9 +50,9 @@ function iniciarJuego() {
 }
 
 function seleccionarPersonajeJugador() {
-    var inputsubzero = document.getElementById('subzero').checked
-    var inputscorpion = document.getElementById('scorpion').checked
-    var inputtremor = document.getElementById('tremor').checked
+    let inputsubzero = document.getElementById('subzero').checked
+    let inputscorpion = document.getElementById('scorpion').checked
+    let inputtremor = document.getElementById('tremor').checked
 
     seccionSeleccionarAtaque.style.display = 'none'
     seccionSeleccionarPersonaje.style.display = 'block'
@@ -107,9 +124,6 @@ function ataqueAleatorioOponente() {
 }
 
 function combate() {
-    let spanvidasJugador = document.getElementById('vida-jugador')
-    let spanvidasOponente = document.getElementById('vida-oponente')
-
     if (ataqueJugador == ataqueOponente) {
         resultadoFinal = ("Empate 🤔")
     } else if (ataqueJugador == "Tierra" && ataqueOponente == "Fuego") {
@@ -142,10 +156,6 @@ function veredicto() {
 }
 
 function crearMensaje() {
-    let sectionMensajes = document.getElementById("resultado")
-    let ataqueDelJugador = document.getElementById('ataque-del-jugador')
-    let ataqueDelOponente = document.getElementById('ataque-del-oponente')
-
     let nuevoAtaqueDelJugador = document.createElement('p')
     let nuevoAtaqueDelOponente = document.createElement('p')
 
@@ -157,30 +167,16 @@ function crearMensaje() {
 }
 
 function crearMensajeFinal() {
-    let SectionMensajes = document.getElementById("mensajes")
-    let parrafo = document.createElement("p")
-
-    if (vidasOponente <= 0) {
-        let botonFuego = document.getElementById('boton-fuego')
-        let botonAgua = document.getElementById('boton-agua')
-        let botonTierra = document.getElementById('boton-tierra')
-
+        if (vidasOponente <= 0) {
         botonFuego.disabled = true
         botonAgua.disabled = true
         botonTierra.disabled = true
-
-        let seccionReiniciar = document.getElementById('reiniciar')
         seccionReiniciar.style.display = 'block'
+   
     } else if (vidasJugador <= 0) {
-        let botonFuego = document.getElementById('boton-fuego')
-        let botonAgua = document.getElementById('boton-agua')
-        let botonTierra = document.getElementById('boton-tierra')
-
         botonFuego.disabled = true
         botonAgua.disabled = true
         botonTierra.disabled = true
-
-        let seccionReiniciar = document.getElementById('reiniciar')
         seccionReiniciar.style.display = 'block'
     }
 }
