@@ -34,6 +34,19 @@ let vidasJugador = 3
 let vidasOponente = 3
 let veredictoFinal
 
+class Mokepon{
+    constructor (nombre, foto, vida){
+        this.nombre = nombre
+        this.foto = foto
+        this.vida = vida
+    }
+}
+let subzero = new Mokepon ('Subzero', './imagenes/subzero.png', 3)
+
+let scorpion = new Mokepon ('Scorpion', './imagenes/Scorpion.png', 3)
+
+let tremor = new Mokepon ('Tremor', './imagenes/Tremor.png', 3)
+
 
 function iniciarJuego() {
     let seccionSeleccionarAtaque = document.getElementById('seleccionar-ataque')
