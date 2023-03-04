@@ -4,43 +4,22 @@
 <head>
     <link rel="stylesheet" href="./styles.css">
     <meta charset="utf-8" />
-    <title>mokepon</title>
+<title>mokepon</title>
 </head>
 
 <body class=cuerpo>
     <h1 class="titulo">Mokepon! proyecto platzi </h1>
     <section class="seccion-personajes" id="seleccionar-personaje">
-        <h3 class="subtitulo">!Atrapalos a todos!</h2>
-            <h4 class="personaje">Seleccione su peleador:
-        </h3>
-
-        <div class="tarjetas">
-            <input type="radio" name="personajes" id="subzero">
-            <label class="tarjeta-personaje" for="subzero">
-                <p>Subzero</p>
-                <img src="./imagenes/subzero.png" alt="Subzero">
-            </label>
+        <h3 class="subtitulo">!Atrapalos a todos!</h3>
             
-            <input type="radio" name="personajes" id="scorpion">
-            <label class="tarjeta-personaje" for="scorpion">
-                <p>Scorpion</p>
-                <img src="./imagenes/Scorpion.png" alt="Scorpion">
+        <h4 class="personaje">Seleccione su peleador:
+        </h4>
 
-            </label>
-            
-            <input type="radio" name="personajes" id="tremor">
-            <label class="tarjeta-personaje" for="tremor">
-                <p> Tremor </p>
-                <img src="./imagenes/Tremor.png" alt="Tremor">
-            </label>
-            <br><br>
-
-
+        <div id='contenedorTarjetas' class="tarjetas">
+        
         </div>
         <button class="elegir-personaje" id="boton-personaje">Seleccionar Peleador</button> <br><br>
     </section>
-
-
 
     <section class="ataque" id="seleccionar-ataque">
 
@@ -59,7 +38,7 @@
                 <button class="boton-reiniciar" id="boton-reiniciar">Reiniciar 🔃 </button>
             </Section>
         </div>
-        <section>
+        <Section>
             <div class="grid-combate">
                 <div class="css-ataque-jugador">
                     <P id="vida-jugador">3 vidas </p>
