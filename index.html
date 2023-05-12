@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
     <link rel="stylesheet" href="./styles.css">
@@ -25,14 +25,11 @@
 
         <h2>Seleccione su ataque:</h2>
 
-        <div class="botonera-ataques">
-            <button class="boton-fuego" id="boton-fuego">Fuego🔥</button>
-            <button class="boton-agua" id="boton-agua">Agua 💧</button>
-            <button class="boton-tierra" id="boton-tierra">Tierra 🌱</button>
-        </div>
+        <div id="contenedorAtaques" class="botonera-ataques">
+            </div>
 
         <div class="seccion-mensajes">
-            <p id="resultado">No mueras 💀 </p>
+            <p id="resultado">No pierdas 💀 </p>
 
             <Section id="reiniciar">
                 <button class="boton-reiniciar" id="boton-reiniciar">Reiniciar 🔃 </button>
@@ -41,12 +38,12 @@
         <Section>
             <div class="grid-combate">
                 <div class="css-ataque-jugador">
-                    <P id="vida-jugador">3 vidas </p>
+                    <P id="victoria-jugador">0 victorias </p>
                     <p id="personaje-jugador"></p>
                     <div id="ataque-del-jugador"></div>
                 </div>
                 <div class="css-ataque-enemigo">
-                    <P id="vida-oponente">3 vidas </p>
+                    <P id="victoria-oponente">0 victorias </p>
                     <p id="personaje-oponente"></p>
                     <div id="ataque-del-oponente"></div>
                 </div>

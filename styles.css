@@ -2,17 +2,14 @@
 
 
 .cuerpo {
-    background-color: #00ABB3;
-
+    background-color: #57a1c0;
     font-family: 'Fredoka One', cursive;
-    color: black;
+    color: white;
     font-size: 25px;
-
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
-
 }
 
 .titulo {
@@ -24,7 +21,7 @@
     justify-content: center;
     text-align: center;
     font-size: larger;
-    color: black;
+    color: white;
 }
 
 
@@ -37,7 +34,7 @@
 .tarjeta-personaje {
     height: 140px;
     width: 212px;
-    background: #3C4048;
+    background: #1a2f38;
     color: white;
     text-align: center;
     margin: 10px;
@@ -67,9 +64,23 @@
 
 
 .botonera-ataques {
-    display: flex;
-    align-items: center;
+    
+     display: flex;   
+    align-items: center;   
     gap: 40px;
+    font-size: 15px;
+    font-family: 'Fredoka One', cursive;   
+    font-size: 35px; 
+    background: #1a2f38;  
+    padding: 10px; 
+    box-sizing: border-box;
+    border-radius: 30px;  
+    flex-wrap: nowrap; 
+    flex-direction: row;
+    align-content: center;
+    justify-content: center; 
+
+
     
 }
 
@@ -78,7 +89,7 @@
     font-family: 'Fredoka One', cursive;
     color: white;
     font-size: 20px;
-    background: rgb(185, 121, 3);
+    background: rgb(0, 0, 0);
     padding: 10px;
     border: 2px solid white;
     border-radius: 20px;
