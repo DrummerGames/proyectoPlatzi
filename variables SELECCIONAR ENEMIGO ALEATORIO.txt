@@ -1,0 +1,7 @@
+Lista de variables y que hacen:
+
+ataqueOponenteAleatorio = almacena la funcion ALEATORIO que sirve para elegir un numero aleatorio dentro de un rango
+
+ataquesDelEnemigo = almacena el nombre y el ataque que se escogio dentro del arreglo ArregloPersonajes
+
+ataqueOponente = alamcena el valor de un elemtno para luego inyectarlo a un arreglo
