@@ -18,14 +18,14 @@ const ataqueDelJugador = document.getElementById('ataque-del-jugador')
 const ataqueDelOponente = document.getElementById('ataque-del-oponente')
 
 //variable de la seccion CrearMensajeFinal
-const seccionReiniciar = document.getElementById('reiniciar')
+const seccionReiniciar = document.getElementById("reiniciar")
 //variable para el contenedor de tajetas de personaje
 const contenedorTarjetas= document.getElementById('contenedorTarjetas')
 const contenedorAtaques= document.getElementById('contenedorAtaques')
 
-let Arreglopersonajes = []
-let ataqueJugador = []
-let ataqueOponente = []
+let ArrayPersonajes = []
+let arrayAtaqueJugador = []
+let arrayAtaqueOponente = []
 let opcionesDePersonaje
 let inputscorpion
 let inputsubzero 
@@ -34,7 +34,6 @@ let botonFuego
 let botonAgua 
 let botonTierra 
 let botonesAtaque = []
-let arregloAtaqueJugador = []
 let ataquesDelEnemigo
 let indexAtaqueJugador 
 let indexAtaqueOponente 
@@ -83,7 +82,7 @@ tremor.ataques.push(
     {nombre: '💧', id:'boton-agua'},
 )
 
-Arreglopersonajes.push(subzero,scorpion,tremor)
+ArrayPersonajes.push(subzero,scorpion,tremor)
 
 function iniciarJuego() {
     let seccionSeleccionarAtaque = document.getElementById('seleccionar-ataque')
@@ -92,7 +91,7 @@ function iniciarJuego() {
     let seccionReiniciar = document.getElementById('reiniciar')
     seccionReiniciar.style.display = 'none'
     
-    Arreglopersonajes.forEach((Mokepon) =>{
+    ArrayPersonajes.forEach((Mokepon) =>{
         opcionesDePersonaje = `
         <input type="radio" name="personaje" id=${Mokepon.nombre} />
         <label class="tarjeta-personaje" for=${Mokepon.nombre}>
@@ -108,7 +107,6 @@ function iniciarJuego() {
 
     })
 
-    //EVENTOS DE CLICK PARA QUE LOS ATAQUES FUNCIONEN//
     botonPersonajeJugador.addEventListener('click', seleccionarPersonajeJugador)
     botonReiniciar.addEventListener('click', reiniciarJuego)
 }
@@ -145,9 +143,9 @@ function seleccionarPersonajeJugador() {
 
 function extraerAtaques(personajeJugador){
 let ataques
-for (let i = 0; i < Arreglopersonajes.length; i++) {
-    if (personajeJugador ===  Arreglopersonajes[i].nombre){
-        ataques =  Arreglopersonajes[i].ataques
+for (let i = 0; i < ArrayPersonajes.length; i++) {
+    if (personajeJugador ===  ArrayPersonajes[i].nombre){
+        ataques =  ArrayPersonajes[i].ataques
     }
     
 } 
@@ -174,87 +172,106 @@ function secuenciaAtaques(){
     botonesAtaque.forEach((boton)=> {
         boton.addEventListener('click', (e) =>{
             if(e.target.textContent === '🔥'){
-                arregloAtaqueJugador.push('FUEGO')
-                console.log(arregloAtaqueJugador)
-                boton.style.background = '#112f58'  
+                arrayAtaqueJugador.push('FUEGO')
+                console.log(arrayAtaqueJugador)
+                boton.style.background = '#112f58'
+                boton.disabled = true  
             } else if (e.target.textContent === '💧'){
-                arregloAtaqueJugador.push('AGUA')
-                console.log(arregloAtaqueJugador)
+                arrayAtaqueJugador.push('AGUA')
+                console.log(arrayAtaqueJugador)
                 boton.style.background = '#112f58'
+                boton.disabled = true
             }else{
-                arregloAtaqueJugador.push('TIERRA')
-                console.log(arregloAtaqueJugador)
+                arrayAtaqueJugador.push('TIERRA')
+                console.log(arrayAtaqueJugador)
                 boton.style.background = '#112f58'
+                boton.disabled = true
             }
-                        ataqueAleatorioOponente()
+            ataqueAleatorioOponente()
         })
 
     })
     
 }
-// solucionar problema con el arreglo del oponente. los ataques estan desordenados
 
 function seleccionarPersonajeOponente() {
-    let personajeAleatorio = aleatorio(0, Arreglopersonajes.length -1)
+    let personajeAleatorio = aleatorio(0, ArrayPersonajes.length -1)
     let spanPersonajeOponente = document.getElementById("personaje-oponente")
 
-    spanPersonajeOponente.innerHTML = Arreglopersonajes[personajeAleatorio].nombre
-    ataquesDelEnemigo = Arreglopersonajes[personajeAleatorio].ataques
+    spanPersonajeOponente.innerHTML = ArrayPersonajes[personajeAleatorio].nombre
+    ataquesDelEnemigo = ArrayPersonajes[personajeAleatorio].ataques
+    console.log(personajeAleatorio)
     secuenciaAtaques()
 }
 
+  
 function ataqueAleatorioOponente() {
-   let ataqueOponenteAleatorio = aleatorio(0,ataquesDelEnemigo.length -1)
+   let ataqueOponenteAleatorio = aleatorio(0,arrayAtaqueOponente.length -1)
 
     if (ataqueOponenteAleatorio == 0 || ataqueOponenteAleatorio == 1) {
-        ataqueOponente.push('FUEGO')
+        arrayAtaqueOponente.push('FUEGO')
     } else if (ataqueOponenteAleatorio == 3|| ataqueOponenteAleatorio == 4) {
-        ataqueOponente.push('AGUA')
+        arrayAtaqueOponente.push('AGUA')
     } else{
-         ataqueOponente.push('TIERRA') }
+        arrayAtaqueOponente.push('TIERRA') }
 
-    console.log(ataqueOponente)
-  iniciarContienda()
-    }
+     console.log(arrayAtaqueOponente)
+    
+     iniciarContienda()
+    }   
 
 function iniciarContienda(){
-    if(arregloAtaqueJugador.length === 5){
+    if(arrayAtaqueJugador.length === 5){
         combate()
     }
 }
 
 function indexContrincantes(jugador,oponente){
-    indexAtaqueJugador =  ataqueJugador[jugador]
-    indexAtaqueOponente = ataqueOponente[oponente]
-    console.log(indexAtaqueJugador)
-    console.log(indexAtaqueOponente)
+    indexAtaqueJugador =  arrayAtaqueJugador[jugador]
+    indexAtaqueOponente = arrayAtaqueOponente[oponente]
+        // console.log(arrayAtaqueJugador[jugador])
+        // console.log(arrayAtaqueOponente[oponente])
 }
 
 
 function combate() {
 
-    for (let index = 0; index < arregloAtaqueJugador.length; index++) {
-       if (arregloAtaqueJugador [index] === ataquesDelEnemigo[index]){
-        
+    for (let index = 0; index < arrayAtaqueJugador.length; index++) {
+       if (arrayAtaqueJugador [index] === arrayAtaqueOponente[index]){
          indexContrincantes(index,index)
-             crearMensaje("Empate")
-            
-       } else if (arregloAtaqueJugador [index] ==="AGUA" && ataquesDelEnemigo[index]=== "FUEGO"){
+        crearMensaje("Empate 😦")     
+       } else if (arrayAtaqueJugador [index] === "AGUA" && arrayAtaqueOponente[index]=== "FUEGO"){
         indexContrincantes(index,index)
         crearMensaje("Has ganado 🎉")
         victoriasJugador++
-        spanVictoriasJugador.innerHTML = victoriasJugador
-       } else if (arregloAtaqueJugador [index] ==="TIERRA" && ataquesDelEnemigo[index]=== "AGUA"){
-        indexContrincantes(index,index)
-        crearMensaje("Has ganado 🎉")
-        victoriasJugador++
-        spanVictoriasJugador.innerHTML = victoriasJugador
+    //     spanVictoriasJugador.innerHTML = victoriasJugador
+    //    } else if (arrayAtaqueJugador [index] ==="TIERRA" && arrayAtaqueOponente[index]=== "AGUA"){
+    //     indexContrincantes(index,index)
+    //     crearMensaje("Has ganado 🎉")
+    //     victoriasJugador++
+    //     spanVictoriasJugador.innerHTML = victoriasJugador
         
-       }else if (arregloAtaqueJugador [index] ==="FUEGO" && ataquesDelEnemigo[index]=== "TIERRA"){
+       }else if (arrayAtaqueJugador [index] ==="FUEGO" && arrayAtaqueOponente[index]=== "TIERRA"){
         indexContrincantes(index,index)
         crearMensaje("Has ganado 🎉")
         victoriasJugador++
         spanVictoriasJugador.innerHTML = victoriasJugador 
+    } else if (arrayAtaqueJugador [index] === "AGUA" && arrayAtaqueOponente[index]=== "TIERRA"){
+        indexContrincantes(index,index)
+        crearMensaje("Has ganado 🎉")
+        victoriasJugador++
+        spanVictoriasJugador.innerHTML = victoriasJugador
+       } else if (arrayAtaqueJugador [index] ==="TIERRA" && arrayAtaqueOponente[index]=== "AGUA"){
+        indexContrincantes(index,index)
+        crearMensaje("Has ganado 🎉")
+        victoriasJugador++
+        spanVictoriasJugador.innerHTML = victoriasJugador
+        
+    //    }else if (arrayAtaqueJugador [index] ==="FUEGO" && arrayAtaqueOponente[index]=== "TIERRA"){
+    //     indexContrincantes(index,index)
+    //     crearMensaje("Has ganado 🎉")
+    //     victoriasJugador++
+    //     spanVictoriasJugador.innerHTML = victoriasJugador 
        
         }   else {
             indexContrincantes(index,index)
@@ -263,6 +280,8 @@ function combate() {
             spanVictoriasOponente.innerHTML = victoriasOponente
        }
       
+    //    console.log(victoriasJugador)
+    //    console.log(victoriasOponente)
     }
     veredicto()
 }
@@ -277,7 +296,7 @@ function veredicto() {
     }
 }
 
-function crearMensaje() {
+function crearMensaje(veredictoFinal) {
     let resultadosAtaqueDelJugador = document.createElement('p')
     let resultadosAtaqueDelOponente = document.createElement('p')
 
@@ -289,19 +308,10 @@ function crearMensaje() {
     ataqueDelOponente.appendChild(resultadosAtaqueDelOponente)
 }
 
-function crearMensajeFinal() {
-        if (victoriasOponente >= victoriasJugador) {
-        botonFuego.disabled = true
-        botonAgua.disabled = true
-        botonTierra.disabled = true
+function crearMensajeFinal(veredictoFinal) {
+        
+        sectionMensajes.innerHTML = veredictoFinal
         seccionReiniciar.style.display = 'block'
-   
-    } else if (victoriasJugador >= victoriasOponente) {
-        botonFuego.disabled = true
-        botonAgua.disabled = true
-        botonTierra.disabled = true
-        seccionReiniciar.style.display = 'block'
-    }
 }
 
 function reiniciarJuego() {
