@@ -23,6 +23,12 @@ const seccionReiniciar = document.getElementById("reiniciar")
 const contenedorTarjetas= document.getElementById('contenedorTarjetas')
 const contenedorAtaques= document.getElementById('contenedorAtaques')
 
+const sectionVerMapa = document.getElementById('ver-mapa')
+const mapa = document.getElementById ('mapa')
+
+
+
+
 let indiceArray = 0;
 
 let arrayPersonajes = []
@@ -30,6 +36,7 @@ let arrayAtaqueJugador1 = []
 let arrayAtaqueJugador2 = []
 let personajeJugador1
 let personajeJugador2
+let personajeJugadorObjeto
 
 let opcionesDePersonaje
 let inputscorpion
@@ -51,19 +58,48 @@ let victoriasJugador2 = 0
 
 let resultadoFinal
 let veredictoFinal
+let lienzo = mapa.getContext('2d')
+let intervalo
+let mapaBackground = new Image()
+    mapaBackground.src = './imagenes/mokemap.png'
+
 
 class Mokepon {
-    constructor (nombre, foto, vida){
+    constructor (nombre, foto, vida,fotoMapa, x = 10, y = 10){
         this.nombre = nombre
         this.id = nombre
         this.foto = foto
         this.vida = vida
         this.ataques = []
+        this.x = x
+        this.y = y
+        this.ancho= 70
+        this. alto =70
+        this.mapaFoto = new Image()
+        this.mapaFoto.src = fotoMapa 
+        this.velocidadX = 0
+        this.velocidadY= 0  
     }
+     pintarPersonaje() {
+        lienzo.drawImage(
+            this.mapaFoto,
+            this.x,
+            this.y,
+            this.ancho,
+            this.alto      
+        )
+     }
+
 }
-let subzero = new Mokepon ('Subzero', './imagenes/subzero.png', 3)
-let scorpion = new Mokepon ('Scorpion', './imagenes/Scorpion.png', 3)
-let tremor = new Mokepon ('Tremor', './imagenes/Tremor.png', 3)
+
+
+let subzero = new Mokepon ('Subzero', './imagenes/subzero.png', 3, './imagenes/subzero-head.png')
+let scorpion = new Mokepon ('Scorpion', './imagenes/Scorpion.png', 3,'./imagenes/scorpion-head.png')
+let tremor = new Mokepon ('Tremor', './imagenes/Tremor.png', 3, './imagenes/tremor-head.png')
+
+let subzeroOponente = new Mokepon ('Subzero', './imagenes/subzero.png', 3, './imagenes/subzero-head.png',80,330 )
+let scorpionOponente = new Mokepon ('Scorpion', './imagenes/Scorpion.png', 3,'./imagenes/scorpion-head.png',130,90)
+let tremorOponente = new Mokepon ('Tremor', './imagenes/Tremor.png', 3, './imagenes/tremor-head.png', 180,10)
 
 subzero.ataques.push(
     {nombre: '💧', id:'boton-agua'},
@@ -90,10 +126,9 @@ tremor.ataques.push(
 arrayPersonajes.push(subzero,scorpion,tremor)
 
 function iniciarJuego() {
-    let seccionSeleccionarAtaque = document.getElementById('seleccionar-ataque')
+   
     seccionSeleccionarAtaque.style.display = 'none'
-    
-    let seccionReiniciar = document.getElementById('reiniciar')
+    sectionVerMapa.style.display = 'none'
     seccionReiniciar.style.display = 'none'
     
     arrayPersonajes.forEach((Mokepon) =>{
@@ -119,9 +154,9 @@ function seleccionarPersonajeJugador1() {
     let inputsubzeroCheck = document.getElementById('Subzero').checked
     let inputscorpionCheck = document.getElementById('Scorpion').checked
     let inputtremorCheck = document.getElementById('Tremor').checked
-    
-    seccionSeleccionarAtaque.style.display = 'none'
+      
     seccionSeleccionarPersonaje.style.display = 'block'
+    
 
     if (inputsubzeroCheck==true) {
         spanPersonajeJugador.innerHTML = inputsubzero.id
@@ -141,15 +176,16 @@ function seleccionarPersonajeJugador1() {
         alert("⚠️ Seleccione un personaje ⚠️")
     }
     extraerAtaques(personajeJugador1)
-    seleccionarPersonajeOponente()
+    iniciarMapa()
+    sectionVerMapa.style.display = 'flex'  
 }
 
 function mostrarSeccionAtaque() {
-    seccionSeleccionarAtaque.style.display = 'block'
-    seccionSeleccionarPersonaje.style.display = 'none'
+    seccionSeleccionarPersonaje.style.display = 'none'    
+    
 }
-
-function extraerAtaques(personajeJugador1) {
+     
+    function extraerAtaques(personajeJugador1) {
     let ataques
     for (let i = 0; i < arrayPersonajes.length; i++) {
         if (personajeJugador1 ===  arrayPersonajes[i].nombre){
@@ -159,6 +195,7 @@ function extraerAtaques(personajeJugador1) {
     
     mostrarAtaques(ataques)
 } 
+
 
 function mostrarAtaques (ataques) { 
     ataques.forEach((ataque)=> {
@@ -174,11 +211,17 @@ function mostrarAtaques (ataques) {
     botonesAtaque = document.querySelectorAll ('.BAtaques')
 }
 
-function seleccionarPersonajeOponente() {
-    personajeJugador2 = aleatorio(0, arrayPersonajes.length - 1);
-    let spanPersonajeJugador2 = document.getElementById("personaje-oponente");
-    spanPersonajeJugador2.innerHTML = arrayPersonajes[personajeJugador2].id;
-    secuenciaAtaques(); // Pasar el personaje seleccionado como parámetro
+function seleccionarPersonajeOponente(personajeJugador2) {
+   
+     spanPersonajeOponente.innerHTML = personajeJugador2.nombre
+     ataquesJugador2 = personajeJugador2.ataques
+     secuenciaAtaques()
+   
+   
+    // personajeJugador2 = aleatorio (0, arrayPersonajes.length - 1);
+    // let spanPersonajeJugador2 = document.getElementById("personaje-oponente");
+    // spanPersonajeJugador2.innerHTML = arrayPersonajes[personajeJugador2].id;
+    // secuenciaAtaques(personajeJugador2); // Pasar el personaje seleccionado como parámetro
 }
 
 function secuenciaAtaques() {
@@ -197,13 +240,13 @@ function secuenciaAtaques() {
                 boton.style.background = '#112f58'
                 boton.disabled = true
             }
-            ataqueAleatorioJugador2(personajeJugador2)
+            ataqueAleatorioJugador2()
         })
     })   
 }
   
-function ataqueAleatorioJugador2(personajeIndex) { // se le pasa un parametro a la funcion para que se quede con un personaje especifico 
-    let setAtaquesPersonaje = arrayPersonajes[personajeIndex].ataques;
+function ataqueAleatorioJugador2(personajeJugador2) { // se le pasa por  parametro una variable referente al personaje que se va a usar a la funcion para que se quede con un personaje especifico 
+    let setAtaquesPersonaje = arrayPersonajes[personajeJugador2].ataques;
     let equivalenciaAtaques = {
       '🪨': 'TIERRA', 
       '🔥': 'FUEGO',    
@@ -260,8 +303,6 @@ function indexContrincantes(jugador,oponente) {
     indexAtaqueJugador2 = arrayAtaqueJugador2[oponente]       
 }
 
-
-// El veredicto se muestra tomando en cuenta el mensaje del ultimo enfrentamiento y no la sumatoria total de victorias
 function veredicto() {
     if (victoriasJugador1 === victoriasJugador2) {
         veredictoFinal = ("Empate 😦")
@@ -302,6 +343,116 @@ function reiniciarJuego() {
 function aleatorio(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
+
+function pintarCanvas(){
+    personajeJugadorObjeto.x = personajeJugadorObjeto.x + personajeJugadorObjeto.velocidadX
+    personajeJugadorObjeto.y = personajeJugadorObjeto.y + personajeJugadorObjeto.velocidadY
+    lienzo.clearRect(0,0, mapa.width, mapa.height)
+    lienzo.drawImage(
+       mapaBackground,
+       0,
+       0,
+       mapa.height,
+       mapa.width
+    )
+    personajeJugadorObjeto.pintarPersonaje()
+    subzeroOponente.pintarPersonaje()
+    scorpionOponente.pintarPersonaje()
+    tremorOponente.pintarPersonaje()
+    if (personajeJugadorObjeto.velocidadX !==0 || personajeJugadorObjeto.velocidadY !==0){
+      
+        revisarColisiones (tremorOponente)
+        revisarColisiones (subzeroOponente)
+        revisarColisiones (scorpionOponente)
+    }
+}
+  
+
+function moverDerecha(){
+    personajeJugadorObjeto.velocidadX = 5
+}
+function moverIzquierda(){
+    personajeJugadorObjeto.velocidadX = -5
+}
+function moverAbajo(){
+    personajeJugadorObjeto.velocidadY = 5
+}
+
+function moverArriba(){
+    personajeJugadorObjeto.velocidadY = -5
+}
+function detenerMovimiento(){
+   
+   
+    personajeJugadorObjeto.velocidadX = 0
+    personajeJugadorObjeto.velocidadY = 0
+}
+
+function sePrecionoUnaTecla (event){
+   switch (event.key) {
+    case 'ArrowUp':
+        moverArriba()
+        break
+   case 'ArrowDown':
+        moverAbajo()
+        break
+        case 'ArrowLeft':
+        moverIzquierda()
+        break
+        case 'ArrowRight':
+        moverDerecha()
+        break
+    default:
+        break;
+   }
+}
+
+function iniciarMapa(){
+    personajeJugadorObjeto = obtenerPersonajeElegido (personajeJugador1)
+    mapa.width = 600
+    mapa.height = 600
+    intervalo = setInterval(pintarCanvas, 50)
+    window.addEventListener('keydown', sePrecionoUnaTecla);
+    window.addEventListener('keyup', detenerMovimiento)
+}
+function obtenerPersonajeElegido(){
+    for (let i = 0; i < arrayPersonajes.length; i++) {
+        if (personajeJugador1 ===  arrayPersonajes[i].nombre){
+            return arrayPersonajes [i]
+        }
+    }
+
+}
+
+function revisarColisiones(personajeJugador2){
+   const arribaJugador2 = personajeJugador2.y
+   const abajoJugador2 = personajeJugador2.y + personajeJugador2. alto
+   const derechaJugador2 = personajeJugador2.x + personajeJugador2.ancho
+   const izquierdaJugador2 = personajeJugador2.x
+    
+   const arribaJugador1 = personajeJugadorObjeto.y
+   const abajoJugador1 = personajeJugadorObjeto.y + personajeJugadorObjeto. alto
+   const derechaJugador1 = personajeJugadorObjeto.x + personajeJugadorObjeto.ancho
+   const izquierdaJugador1 = personajeJugadorObjeto.x
+    
+   
+   
+   if(
+        abajoJugador1 < arribaJugador2 ||
+        arribaJugador1 > abajoJugador2 ||
+        derechaJugador1 < izquierdaJugador2 ||
+        izquierdaJugador1 > derechaJugador2
+    ) {
+        return
+    }
+   
+    detenerMovimiento()
+    sectionVerMapa.style.display = 'none'
+    seccionSeleccionarAtaque.style.display = 'block'
+    seleccionarPersonajeOponente(personajeJugador2)
+    
+}
+
 
 window.addEventListener('load', iniciarJuego)
 
