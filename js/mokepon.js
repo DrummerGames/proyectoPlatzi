@@ -56,7 +56,7 @@ const equivalenciaAtaques = {
 
 
 let indiceArray = 0;
-
+let jugadorId = null
 let arrayPersonajes = []
 let arrayAtaqueJugador1 = []
 let arrayAtaqueJugador2 = []
@@ -153,8 +153,22 @@ function iniciarJuego() {
 
     botonPersonajeJugador.addEventListener('click', seleccionarPersonajeJugador1)
     botonReiniciar.addEventListener('click', reiniciarJuego)
+    unirseAlJuego()
 }
 
+
+function unirseAlJuego(){
+    fetch("http://localhost:8080/unirse")
+        .then(function (res){
+        if (res.ok){
+             res.text()
+            .then(function(respuesta){
+            console.log(respuesta);
+             jugadorId= respuesta
+            })
+         }
+    })
+}
 function seleccionarPersonajeJugador1() {
     let inputsubzeroCheck = document.getElementById('Subzero').checked
     let inputscorpionCheck = document.getElementById('Scorpion').checked
@@ -179,9 +193,28 @@ function seleccionarPersonajeJugador1() {
         seccionSeleccionarPersonaje.style.display = 'block'
         alert("⚠️ Seleccione un personaje ⚠️")
     }
+    
+    seleccionarPersonaje(personajeJugador1)
+
     extraerAtaques(personajeJugador1)
     iniciarMapa()
     sectionVerMapa.style.display = 'flex'
+    
+}
+
+function seleccionarPersonaje(personajeJugador1){
+    fetch(`http://localhost:8080/mokepon/${jugadorId}`,{
+        method:"post",
+        headers: {
+            "Content-Type": "application/json"
+        }, 
+        body: JSON.stringify({
+        mokepon:personajeJugador1
+
+    })
+})
+ 
+
 }
 
 function mostrarSeccionAtaque() {
@@ -219,11 +252,6 @@ function seleccionarPersonajeOponente() {
     ataquesJugador2 = personajeJugador2.ataques
     secuenciaAtaques()
 
-
-    // personajeJugador2 = aleatorio (0, arrayPersonajes.length - 1);
-    // let spanPersonajeJugador2 = document.getElementById("personaje-oponente");
-    // spanPersonajeJugador2.innerHTML = arrayPersonajes[personajeJugador2].id;
-    // secuenciaAtaques(personajeJugador2); // Pasar el personaje seleccionado como parámetro
 }
 
 function secuenciaAtaques() {
@@ -355,6 +383,10 @@ function pintarCanvas() {
         mapa.width
     )
     personajeJugadorObjeto.pintarPersonaje()
+
+    enviarPosicion (personajeJugadorObjeto.x, personajeJugadorObjeto.y)
+
+
     subzeroOponente.pintarPersonaje()
     scorpionOponente.pintarPersonaje()
     tremorOponente.pintarPersonaje()
@@ -364,6 +396,22 @@ function pintarCanvas() {
         revisarColisiones(subzeroOponente)
         revisarColisiones(scorpionOponente)
     }
+}
+
+function enviarPosicion(x,y){
+fetch(`http://localhost8080/mokepon/${jugadorId}/posicion`,{
+method:"post",
+headers: {
+    "Content-Type": "application/json"
+
+},
+body: JSON.stringify({
+        x,
+        y
+
+        })
+
+    })
 }
 
 function moverDerecha() {

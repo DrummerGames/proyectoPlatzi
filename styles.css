@@ -178,10 +178,25 @@ input:checked + label{
     box-shadow: #3C4048;
 }
 
- #ver-mapa {
+ #ver-mapa{
  flex-direction: column;
  align-items: center;
  justify-content: center;
+
+   
+
+}
+#ver-mapa button {
+    width: 110px;
+    height: 40px;
+    margin: 10px 0;
+    border-radius: 20px;
+    border: solid 2px;
+    padding: 9px;
+    align-items: center;
+    font-family: 'Fredoka One', cursive;
+    color: black;
+    font-size: 20px;
 
 }
 
@@ -189,8 +204,18 @@ input:checked + label{
     border: 4px solid white;
 } 
 
-@media (max-width: 360px){
-    .tarjetas,.botonera-ataques{
+@media (max-width: 560px){
+    .tarjetas,.botonera-ataques,.titulo{
+    flex-direction: column;
+    align-items: center;
+    }
+}
+
+@media (max-width: 300px){
+    #ver-mapa div{
+        display: flex;
+        align-items: center;
     flex-direction: column;
     }
 }
+

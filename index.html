@@ -4,33 +4,28 @@
 <head>
     <link rel="stylesheet" href="./styles.css">
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>mokepon</title>
 </head>
 
 <body class=cuerpo>
     <h1 class="titulo">Mokepon! proyecto platzi </h1>
     <section class="seccion-personajes" id="seleccionar-personaje">
-        <h3 class="subtitulo">!Atrapalos a todos!</h3>
-            
-        <h4 class="personaje">Seleccione su peleador:
-        </h4>
-
-        <div id='contenedorTarjetas' class="tarjetas">
-        
-        </div>
+        <h3 class="subtitulo">!Atrapalos a todos!</h3>   
+        <h4 class="personaje">Seleccione su peleador:</h4>
+        <div id='contenedorTarjetas' class="tarjetas"></div>
         <button class="elegir-personaje" id="boton-personaje">Seleccionar Peleador</button> <br><br>
     </section>
 
     <section id="ver-mapa">
-        <h1 class="titulo">Explora el terreno</h1>
+        <h2 class="subtitulo">Explora el terreno</h2>
         <canvas id="mapa">  </canvas>
-        <button onmouseup="detenerMovimiento()" onmousedown="moverArriba()">Arriba</button> <br>
-        <button onmouseup="detenerMovimiento()" onmousedown="moverDerecha()">Derecha</button> <br>
-        <button onmouseup="detenerMovimiento()" onmousedown="moverAbajo()">Abajo</button> <br>
-        <button onmouseup="detenerMovimiento()" onmousedown="moverIzquierda()">Izquierda</button> <br>
-        
-        
-        
+        <button onmouseup="detenerMovimiento()" onmousedown="moverArriba()">Arriba</button> 
+        <div>
+            <button onmouseup="detenerMovimiento()" onmousedown="moverIzquierda()">Izquierda</button>
+            <button onmouseup="detenerMovimiento()" onmousedown="moverAbajo()">Abajo</button> 
+            <button onmouseup="detenerMovimiento()" onmousedown="moverDerecha()">Derecha</button> 
+        </div>
     </section>
     
     <section class="ataque" id="seleccionar-ataque">
