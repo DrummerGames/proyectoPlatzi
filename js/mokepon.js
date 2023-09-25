@@ -1,60 +1,3 @@
-//variables de la funcion IniciarJuego
-const botonPersonajeJugador = document.getElementById('boton-personaje')
-const botonReiniciar = document.getElementById("boton-reiniciar")
-
-//variable de la funcion seleccionarPersonajeJugador
-const spanPersonajeJugador = document.getElementById("personaje-jugador")
-const spanPersonajeOponente = document.getElementById("personaje-oponente")
-
-//variables de la funcion seleccionarAtaque
-const seccionSeleccionarAtaque = document.getElementById('seleccionar-ataque')
-const seccionSeleccionarPersonaje = document.getElementById('seleccionar-personaje')
-const spanVictoriasJugador1 = document.getElementById('victoria-jugador')
-const spanVictoriasJugador2 = document.getElementById('victoria-oponente')
-
-//variables de la funcion CrearMensaje
-const sectionMensajes = document.getElementById("resultado-final")
-const ataqueDelJugador = document.getElementById('ataque-del-jugador')
-const ataqueDelOponente = document.getElementById('ataque-del-oponente')
-
-//variable de la seccion CrearMensajeFinal
-const seccionReiniciar = document.getElementById("reiniciar")
-
-//variable para el contenedor de tajetas de personaje
-const contenedorTarjetas = document.getElementById('contenedorTarjetas')
-const contenedorAtaques = document.getElementById('contenedorAtaques')
-
-const sectionVerMapa = document.getElementById('ver-mapa')
-const mapa = document.getElementById('mapa')
-
-const ataquesAgua = [
-    { nombre: '💧', id: 'boton-agua' },
-    { nombre: '💧', id: 'boton-agua' },
-    { nombre: '💧', id: 'boton-agua' },
-    { nombre: '🔥', id: 'boton-fuego' },
-    { nombre: '🪨', id: 'boton-tierra' }
-]
-const ataquesTierra = [
-    { nombre: '🪨', id: 'boton-tierra' },
-    { nombre: '🪨', id: 'boton-tierra' },
-    { nombre: '🪨', id: 'boton-tierra' },
-    { nombre: '🔥', id: 'boton-fuego' },
-    { nombre: '💧', id: 'boton-agua' },
-]
-const ataquesFuego = [
-    { nombre: '🔥', id: 'boton-fuego' },
-    { nombre: '🔥', id: 'boton-fuego' },
-    { nombre: '🔥', id: 'boton-fuego' },
-    { nombre: '💧', id: 'boton-agua' },
-    { nombre: '🪨', id: 'boton-tierra' },
-]
-const equivalenciaAtaques = {
-    '🪨': 'TIERRA',
-    '🔥': 'FUEGO',
-    '💧': 'AGUA'
-};
-
-
 let indiceArray = 0;
 let jugadorId = null
 let arrayPersonajes = []
@@ -89,37 +32,6 @@ let intervalo
 let mapaBackground = new Image()
 mapaBackground.src = './imagenes/mokemap.png'
 
-
-
-class Mokepon {
-    constructor(nombre, foto, vida, fotoMapa, x = 10, y = 10) {
-        this.nombre = nombre
-        this.id = nombre
-        this.foto = foto
-        this.vida = vida
-        this.ataques
-        this.x = x
-        this.y = y
-        this.ancho = 70
-        this.alto = 70
-        this.mapaFoto = new Image()
-        this.mapaFoto.src = fotoMapa
-        this.velocidadX = 0
-        this.velocidadY = 0
-    }
-
-    pintarPersonaje() {
-        lienzo.drawImage(
-            this.mapaFoto,
-            this.x,
-            this.y,
-            this.ancho,
-            this.alto
-        )
-    }
-}
-
-
 let subzero = new Mokepon('Subzero', './imagenes/subzero.png', 3, './imagenes/subzero-head.png')
 let scorpion = new Mokepon('Scorpion', './imagenes/Scorpion.png', 3, './imagenes/scorpion-head.png')
 let tremor = new Mokepon('Tremor', './imagenes/Tremor.png', 3, './imagenes/tremor-head.png')
@@ -131,10 +43,36 @@ let tremorOponente = new Mokepon('Tremor', './imagenes/Tremor.png', 3, './imagen
 arrayPersonajes.push(subzero, scorpion, tremor)
 setearAtaquesPersonajes()
 
+function unirseAlJuego(){
+    fetch("http://localhost:8080/unirse")
+        .then(function (res) {
+        if (res.ok){
+             res.text()
+            .then(function(respuesta){
+                console.log(respuesta);
+                jugadorId = respuesta
+            })
+         }
+    })
+}
+
+function seleccionarPersonaje(personajeJugador1) {
+    fetch(`http://localhost:8080/mokepon/${jugadorId}`,{
+        method:"post",
+        headers: {
+            "Content-Type": "application/json"
+        }, 
+        body: JSON.stringify({
+            mokepon:personajeJugador1
+
+        })
+    })
+}
+
 function iniciarJuego() {
-    seccionSeleccionarAtaque.style.display = 'none'
-    sectionVerMapa.style.display = 'none'
-    seccionReiniciar.style.display = 'none'
+    elementosUI.seccionSeleccionarAtaque.style.display = 'none'
+    elementosUI.sectionVerMapa.style.display = 'none'
+    elementosUI.seccionReiniciar.style.display = 'none'
 
     arrayPersonajes.forEach((Mokepon) => {
         opcionesDePersonaje = `
@@ -151,46 +89,33 @@ function iniciarJuego() {
         inputtremor = document.getElementById('Tremor')
     })
 
-    botonPersonajeJugador.addEventListener('click', seleccionarPersonajeJugador1)
-    botonReiniciar.addEventListener('click', reiniciarJuego)
+    elementosUI.botonPersonajeJugador.addEventListener('click', seleccionarPersonajeJugador1)
+    elementosUI.botonReiniciar.addEventListener('click', reiniciarJuego)
     unirseAlJuego()
 }
 
-
-function unirseAlJuego(){
-    fetch("http://localhost:8080/unirse")
-        .then(function (res){
-        if (res.ok){
-             res.text()
-            .then(function(respuesta){
-            console.log(respuesta);
-             jugadorId= respuesta
-            })
-         }
-    })
-}
 function seleccionarPersonajeJugador1() {
     let inputsubzeroCheck = document.getElementById('Subzero').checked
     let inputscorpionCheck = document.getElementById('Scorpion').checked
     let inputtremorCheck = document.getElementById('Tremor').checked
 
-    seccionSeleccionarPersonaje.style.display = 'block'
+    elementosUI.seccionSeleccionarPersonaje.style.display = 'block'
 
     if (inputsubzeroCheck == true) {
-        spanPersonajeJugador.innerHTML = inputsubzero.id
+        elementosUI.spanPersonajeJugador.innerHTML = inputsubzero.id
         personajeJugador1 = inputsubzero.id
         mostrarSeccionAtaque()
     } else if (inputscorpionCheck == true) {
-        spanPersonajeJugador.innerHTML = inputscorpion.id
+        elementosUI.spanPersonajeJugador.innerHTML = inputscorpion.id
         personajeJugador1 = inputscorpion.id
         mostrarSeccionAtaque()
     } else if (inputtremorCheck == true) {
-        spanPersonajeJugador.innerHTML = inputtremor.id
+        elementosUI.spanPersonajeJugador.innerHTML = inputtremor.id
         personajeJugador1 = inputtremor.id
         mostrarSeccionAtaque()
     } else {
-        seccionSeleccionarAtaque.style.display = 'none'
-        seccionSeleccionarPersonaje.style.display = 'block'
+        elementosUI.seccionSeleccionarAtaque.style.display = 'none'
+        elementosUI.seccionSeleccionarPersonaje.style.display = 'block'
         alert("⚠️ Seleccione un personaje ⚠️")
     }
     
@@ -198,27 +123,11 @@ function seleccionarPersonajeJugador1() {
 
     extraerAtaques(personajeJugador1)
     iniciarMapa()
-    sectionVerMapa.style.display = 'flex'
-    
-}
-
-function seleccionarPersonaje(personajeJugador1){
-    fetch(`http://localhost:8080/mokepon/${jugadorId}`,{
-        method:"post",
-        headers: {
-            "Content-Type": "application/json"
-        }, 
-        body: JSON.stringify({
-        mokepon:personajeJugador1
-
-    })
-})
- 
-
+    elementosUI.sectionVerMapa.style.display = 'flex'
 }
 
 function mostrarSeccionAtaque() {
-    seccionSeleccionarPersonaje.style.display = 'none'
+    elementosUI.seccionSeleccionarPersonaje.style.display = 'none'
 }
 
 function extraerAtaques(personajeJugador1) {
@@ -234,12 +143,11 @@ function extraerAtaques(personajeJugador1) {
 
 
 function mostrarAtaques(ataques) {
-    ataques.forEach((ataque) => {
-        ataquesPersonaje = `
-        <button class="botonera-ataques BAtaques"  id=${ataque.id}>${ataque.nombre}</button>
-        `
-        contenedorAtaques.innerHTML += ataquesPersonaje
-    })
+    const ataquesHTML = ataques.map((ataque) => `
+        <button class="botonera-ataques BAtaques" id=${ataque.id}>${ataque.nombre}</button>
+    `).join('');
+
+    contenedorAtaques.innerHTML = ataquesHTML;
 
     botonFuego = document.getElementById('boton-fuego')
     botonAgua = document.getElementById('boton-agua')
@@ -248,7 +156,7 @@ function mostrarAtaques(ataques) {
 }
 
 function seleccionarPersonajeOponente() {
-    spanPersonajeOponente.innerHTML = personajeJugador2.nombre
+    elementosUI.spanPersonajeOponente.innerHTML = personajeJugador2.nombre
     ataquesJugador2 = personajeJugador2.ataques
     secuenciaAtaques()
 
@@ -277,15 +185,14 @@ function secuenciaAtaques() {
 
 function ataqueAleatorioJugador2() { 
     // se le pasa por  parametro una variable referente al personaje que se va a usar a la funcion para que se quede con un personaje especifico.
-    let setAtaquesPersonaje = personajeJugador2.ataques;
+    const availableAttacks = personajeJugador2.ataques;
     
-    if (setAtaquesPersonaje.length > 0) {
-        let indiceAleatorio = aleatorio(0, setAtaquesPersonaje.length - 1);
-        let ataqueAleatorio = setAtaquesPersonaje[indiceAleatorio];
-        let nombreAtaque = equivalenciaAtaques[ataqueAleatorio.nombre];
+    if (availableAttacks.length > 0) {
+        const indiceAleatorio = aleatorio(0, availableAttacks.length - 1);
+        const ataqueAleatorio = availableAttacks.splice(indiceAleatorio, 1)[0];
+        const nombreAtaque = equivalenciaAtaques[ataqueAleatorio.nombre];
 
         arrayAtaqueJugador2.push(nombreAtaque);
-        setAtaquesPersonaje.splice(indiceAleatorio, 1);
     }
 
     combate()
@@ -298,24 +205,24 @@ function combate() {
     } else if (arrayAtaqueJugador1[indiceArray] === "TIERRA" && arrayAtaqueJugador2[indiceArray] === "AGUA") {
         indexContrincantes(indiceArray, indiceArray)
         victoriasJugador1++
-        spanVictoriasJugador1.innerHTML = victoriasJugador1
+        elementosUI.spanVictoriasJugador1.innerHTML = victoriasJugador1
         crearMensaje("HAS GANADO! 🎉")
     } else if (arrayAtaqueJugador1[indiceArray] === "FUEGO" && arrayAtaqueJugador2[indiceArray] === "TIERRA") {
         indexContrincantes(indiceArray, indiceArray)
         victoriasJugador1++
-        spanVictoriasJugador1.innerHTML = victoriasJugador1
+        elementosUI.spanVictoriasJugador1.innerHTML = victoriasJugador1
         crearMensaje("HAS GANADO! 🎉")
     } else if (arrayAtaqueJugador1[indiceArray] === "AGUA" && arrayAtaqueJugador2[indiceArray] === "FUEGO") {
         indexContrincantes(indiceArray, indiceArray)
         victoriasJugador1++
-        spanVictoriasJugador1.innerHTML = victoriasJugador1
+        elementosUI.spanVictoriasJugador1.innerHTML = victoriasJugador1
         crearMensaje("HAS GANADO! 🎉")
     } else {
         indexContrincantes(indiceArray, indiceArray)
         crearMensaje("Has perdido 💀")
-        seccionReiniciar.style.display = 'block'
+        elementosUI.seccionReiniciar.style.display = 'block'
         victoriasJugador2++
-        spanVictoriasJugador2.innerHTML = victoriasJugador2
+        elementosUI.spanVictoriasJugador2.innerHTML = victoriasJugador2
     }
 
     if (arrayAtaqueJugador1.length === 5) {
@@ -332,13 +239,13 @@ function indexContrincantes(jugador, oponente) {
 function veredicto() {
     if (victoriasJugador1 === victoriasJugador2) {
         veredictoFinal = ("Empate 😦")
-        seccionReiniciar.style.display = 'block'
+        elementosUI.seccionReiniciar.style.display = 'block'
     } else if (victoriasJugador1 > victoriasJugador2) {
         veredictoFinal = ("Has ganado!!")
-        seccionReiniciar.style.display = 'block'
+        elementosUI.seccionReiniciar.style.display = 'block'
     } else {
         veredictoFinal = ("HAS PERDIDO LA BATALLA, RETIRADA 🏃‍♂️")
-        seccionReiniciar.style.display = 'block'
+        elementosUI.seccionReiniciar.style.display = 'block'
     }
     crearMensajeFinal(veredictoFinal);
 }
@@ -348,18 +255,18 @@ function crearMensaje(mensaje) {
     let resultadosAtaqueDelJugador1 = document.createElement('p')
     let resultadosAtaqueDelJugador2 = document.createElement('p')
 
-    sectionMensajes.innerHTML = mensaje
+    elementosUI.sectionMensajes.innerHTML = mensaje
     resultadosAtaqueDelJugador1.innerHTML = indexAtaqueJugador1
     resultadosAtaqueDelJugador2.innerHTML = indexAtaqueJugador2
     resultadoFinal.innerHTML = mensaje
 
-    ataqueDelJugador.appendChild(resultadosAtaqueDelJugador1)
-    ataqueDelOponente.appendChild(resultadosAtaqueDelJugador2)
+    elementosUI.ataqueDelJugador.appendChild(resultadosAtaqueDelJugador1)
+    elementosUI.ataqueDelOponente.appendChild(resultadosAtaqueDelJugador2)
 }
 
 function crearMensajeFinal(mensajeFinal) {
-    sectionMensajes.innerHTML = mensajeFinal
-    seccionReiniciar.style.display = 'block'
+    elementosUI.sectionMensajes.innerHTML = mensajeFinal
+    elementosUI.seccionReiniciar.style.display = 'block'
 }
 
 function reiniciarJuego() {
@@ -399,26 +306,25 @@ function pintarCanvas() {
 }
 
 function enviarPosicion(x,y){
-fetch(`http://localhost:8080/mokepon/${jugadorId}/posicion`,{
-method:"post",
-headers: {
-    "Content-Type": "application/json"
-},
-body: JSON.stringify({
-        x,
-        y
-        })
-
-    })
-    .then(function(res){
-    if (res.ok){
-        res.json()
-        .then(function({enemigos}){
-            console.log(enemigos)
-        
+    fetch(`http://localhost:8080/mokepon/${jugadorId}/posicion`,{
+    method:"post",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+            x,
+            y
             })
-         }
-    })
+        })
+        .then(function(res){
+            if (res.ok) {
+                res.json()
+
+                .then(function({enemigos}) {
+                    console.log(enemigos)
+                })
+            }
+        })
 }
 
 function moverDerecha() {
@@ -504,8 +410,8 @@ function revisarColisiones(personajeOponente) {
 
     detenerMovimiento()
     clearInterval(intervalo)
-    sectionVerMapa.style.display = 'none'
-    seccionSeleccionarAtaque.style.display = 'block'
+    elementosUI.sectionVerMapa.style.display = 'none'
+    elementosUI.seccionSeleccionarAtaque.style.display = 'block'
     personajeJugador2 = personajeOponente
     seleccionarPersonajeOponente()
 }
@@ -515,14 +421,12 @@ function ingresarAtaqueJugador(personaje, ataquesPersonaje) {
 }
 
 function setearAtaquesPersonajes() {
-    ingresarAtaqueJugador(subzero, ataquesAgua)
-    ingresarAtaqueJugador(scorpion, ataquesFuego)
-    ingresarAtaqueJugador(tremor, ataquesTierra)
-    ingresarAtaqueJugador(subzeroOponente, ataquesAgua)
-    ingresarAtaqueJugador(scorpionOponente, ataquesFuego)
-    ingresarAtaqueJugador(tremorOponente, ataquesTierra)
+    const personajesConAtaques = [subzero, scorpion, tremor, subzeroOponente, scorpionOponente, tremorOponente];
+    const ataquesPorPersonaje = [ataquesAgua, ataquesFuego, ataquesTierra];
+
+    personajesConAtaques.forEach((personaje, index) => {
+        ingresarAtaqueJugador(personaje, ataquesPorPersonaje[index % ataquesPorPersonaje.length]);
+    });
 }
 
-
 window.addEventListener('load', iniciarJuego)
-
