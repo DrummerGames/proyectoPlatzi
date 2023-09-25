@@ -399,18 +399,25 @@ function pintarCanvas() {
 }
 
 function enviarPosicion(x,y){
-fetch(`http://localhost8080/mokepon/${jugadorId}/posicion`,{
+fetch(`http://localhost:8080/mokepon/${jugadorId}/posicion`,{
 method:"post",
 headers: {
     "Content-Type": "application/json"
-
 },
 body: JSON.stringify({
         x,
         y
-
         })
 
+    })
+    .then(function(res){
+    if (res.ok){
+        res.json()
+        .then(function({enemigos}){
+            console.log(enemigos)
+        
+            })
+         }
     })
 }
 
