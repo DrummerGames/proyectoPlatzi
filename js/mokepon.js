@@ -92,9 +92,9 @@ mapaBackground.src = './imagenes/mokemap.png'
 
 
 class Mokepon {
-    constructor(nombre, foto, vida, fotoMapa, x = 10, y = 10) {
+    constructor(nombre, foto, vida, fotoMapa, id = null, x = 10, y = 10) {
         this.nombre = nombre
-        this.id = nombre
+        this.id = id
         this.foto = foto
         this.vida = vida
         this.ataques
@@ -124,9 +124,6 @@ let subzero = new Mokepon('Subzero', './imagenes/subzero.png', 3, './imagenes/su
 let scorpion = new Mokepon('Scorpion', './imagenes/Scorpion.png', 3, './imagenes/scorpion-head.png')
 let tremor = new Mokepon('Tremor', './imagenes/Tremor.png', 3, './imagenes/tremor-head.png')
 
-let subzeroOponente = new Mokepon('Subzero', './imagenes/subzero.png', 3, './imagenes/subzero-head.png', 80, 330)
-let scorpionOponente = new Mokepon('Scorpion', './imagenes/Scorpion.png', 3, './imagenes/scorpion-head.png', 130, 90)
-let tremorOponente = new Mokepon('Tremor', './imagenes/Tremor.png', 3, './imagenes/tremor-head.png', 180, 10)
 
 arrayPersonajes.push(subzero, scorpion, tremor)
 setearAtaquesPersonajes()
@@ -363,6 +360,7 @@ function crearMensajeFinal(mensajeFinal) {
 }
 
 function reiniciarJuego() {
+    enemigos = [];
     location.reload()
 }
 
@@ -387,9 +385,9 @@ function pintarCanvas() {
     enviarPosicion (personajeJugadorObjeto.x, personajeJugadorObjeto.y)
 
 
-    subzeroOponente.pintarPersonaje()
-    scorpionOponente.pintarPersonaje()
-    tremorOponente.pintarPersonaje()
+        subzeroOponente.pintarPersonaje()
+        scorpionOponente.pintarPersonaje()
+        tremorOponente.pintarPersonaje()
 
     if (personajeJugadorObjeto.velocidadX !== 0 || personajeJugadorObjeto.velocidadY !== 0) {
         revisarColisiones(tremorOponente)
@@ -415,12 +413,28 @@ body: JSON.stringify({
         res.json()
         .then(function({enemigos}){
             console.log(enemigos)
-        
+            enemigos.forEach(function (enemigo){
+                let mokeponEnemigo = null 
+                const mokeponNombre = enemigo.mokepon.nombre || ""
+                if (mokeponNombre === "Scorpion"){
+                    mokeponEnemigo  = new Mokepon('Scorpion', './imagenes/Scorpion.png', 3, './imagenes/scorpion-head.png', 130, 90)
+                 } else if (mokeponNombre === "Subzero") {
+                    mokeponEnemigo = new Mokepon('Subzero', './imagenes/subzero.png', 3, './imagenes/subzero-head.png', 80, 330)
+                } else if (mokeponNombre === "Tremor") {
+                    mokeponEnemigo= new Mokepon('Tremor', './imagenes/Tremor.png', 3, './imagenes/tremor-head.png', 180, 10)
+                }
+
+                    mokeponEnemigo.x = enemigo.x
+                    mokeponEnemigo.y = enemigo.y
+                    mokeponEnemigo.pintarPersonaje()
+
+                 })
             })
          }
     })
 }
 
+//se cambio la velocidad de 5 pixeles a 20
 function moverDerecha() {
     personajeJugadorObjeto.velocidadX = 5
 }
@@ -464,7 +478,7 @@ function iniciarMapa() {
     mapa.height = 600
     intervalo = setInterval(pintarCanvas, 50)
     window.addEventListener('keydown', sePrecionoUnaTecla);
-    window.addEventListener('keyup', detenerMovimiento)
+    window.addEventListener('keyup', detenerMovimiento)     
 }
 function obtenerPersonajeElegido() {
     for (let i = 0; i < arrayPersonajes.length; i++) {
@@ -518,9 +532,9 @@ function setearAtaquesPersonajes() {
     ingresarAtaqueJugador(subzero, ataquesAgua)
     ingresarAtaqueJugador(scorpion, ataquesFuego)
     ingresarAtaqueJugador(tremor, ataquesTierra)
-    ingresarAtaqueJugador(subzeroOponente, ataquesAgua)
-    ingresarAtaqueJugador(scorpionOponente, ataquesFuego)
-    ingresarAtaqueJugador(tremorOponente, ataquesTierra)
+    // ingresarAtaqueJugador(subzeroOponente, ataquesAgua)
+    // ingresarAtaqueJugador(scorpionOponente, ataquesFuego)
+    // ingresarAtaqueJugador(tremorOponente, ataquesTierra)
 }
 
 
