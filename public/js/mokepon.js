@@ -57,7 +57,9 @@ const equivalenciaAtaques = {
 
 let indiceArray = 0;
 let jugadorId = null
+let personajeOponenteId = null
 let arrayPersonajes = []
+let personajesEnemigos = []
 let arrayAtaqueJugador1 = []
 let arrayAtaqueJugador2 = []
 let personajeJugador1
@@ -120,6 +122,7 @@ class Mokepon {
 }
 
 
+
 let subzero = new Mokepon('Subzero', './imagenes/subzero.png', 3, './imagenes/subzero-head.png')
 let scorpion = new Mokepon('Scorpion', './imagenes/Scorpion.png', 3, './imagenes/scorpion-head.png')
 let tremor = new Mokepon('Tremor', './imagenes/Tremor.png', 3, './imagenes/tremor-head.png')
@@ -155,7 +158,7 @@ function iniciarJuego() {
 
 
 function unirseAlJuego(){
-    fetch("http://localhost:8080/unirse")
+    fetch("http://192.168.0.102:8080/unirse")
         .then(function (res){
         if (res.ok){
              res.text()
@@ -189,18 +192,20 @@ function seleccionarPersonajeJugador1() {
         seccionSeleccionarAtaque.style.display = 'none'
         seccionSeleccionarPersonaje.style.display = 'block'
         alert("⚠️ Seleccione un personaje ⚠️")
+        return
     }
     
     seleccionarPersonaje(personajeJugador1)
 
-    extraerAtaques(personajeJugador1)
+    extraerAtaques(personajeJugador1)   
     iniciarMapa()
     sectionVerMapa.style.display = 'flex'
     
 }
 
 function seleccionarPersonaje(personajeJugador1){
-    fetch(`http://localhost:8080/mokepon/${jugadorId}`,{
+    alert ("ENTRE A SELECCIONAR PERSONAJES")
+    fetch(`http://192.168.0.102:8080/mokepon/${jugadorId}`,{
         method:"post",
         headers: {
             "Content-Type": "application/json"
@@ -212,6 +217,78 @@ function seleccionarPersonaje(personajeJugador1){
 })
  
 
+}
+
+function pintarCanvas() {
+ 
+    personajeJugadorObjeto.x = personajeJugadorObjeto.x + personajeJugadorObjeto.velocidadX
+    personajeJugadorObjeto.y = personajeJugadorObjeto.y + personajeJugadorObjeto.velocidadY
+
+    lienzo.clearRect(0, 0, mapa.width, mapa.height)
+    lienzo.drawImage(
+        mapaBackground,
+        0,
+        0,
+        mapa.height,
+        mapa.width
+    )
+    personajeJugadorObjeto.pintarPersonaje()
+
+    enviarPosicion(personajeJugadorObjeto.x, personajeJugadorObjeto.y)
+
+ personajesEnemigos.forEach(function (mokepon){
+  if (mokepon != undefined) {
+    mokepon.pintarPersonaje()
+    revisarColisiones(mokepon)
+  }
+})
+}
+
+function enviarPosicion(x,y){
+    console.log ("entre a enviar posicion")
+    console.trace()
+fetch(`http://192.168.0.102:8080/mokepon/${jugadorId}/posicion`,{
+        method:"post",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+                x,
+                y
+            })
+
+    })
+
+    .then(function(res){
+    if (res.ok){
+        return res.json().then(function({ enemigos }) {
+            console.log(enemigos);
+            personajesEnemigos = enemigos.map(function (enemigo){
+                let mokeponEnemigo = null 
+                if(enemigo.mokepon !== undefined) {
+             
+                const mokeponNombre = enemigo.mokepon.nombre;
+                switch (mokeponNombre){
+                case "Scorpion":
+                    mokeponEnemigo  = new Mokepon('Scorpion', './imagenes/Scorpion.png', 3, './imagenes/scorpion-head.png', 130, 90, enemigo.id)
+                    break;
+                case "Subzero":
+                      mokeponEnemigo = new Mokepon('Subzero', './imagenes/subzero.png', 3, './imagenes/subzero-head.png', 80, 330 , enemigo.id)
+                    break
+                        case"Tremor":
+                         mokeponEnemigo= new Mokepon('Tremor', './imagenes/Tremor.png', 3, './imagenes/tremor-head.png', 180, 10, enemigo.id)
+                    break;
+                     default:combate
+                    break;
+                     }
+                    mokeponEnemigo.x = enemigo.x
+                    mokeponEnemigo.y = enemigo.y
+                    }
+                    return mokeponEnemigo
+                });
+             })        
+        }
+    });
 }
 
 function mostrarSeccionAtaque() {
@@ -252,6 +329,8 @@ function seleccionarPersonajeOponente() {
 }
 
 function secuenciaAtaques() {
+   console.trace ()
+    console.log("entre a SECUENCIA ATAQUES")
     botonesAtaque.forEach((boton) => {
         boton.addEventListener('click', (e) => {
             if (e.target.textContent === '🔥') {
@@ -267,10 +346,51 @@ function secuenciaAtaques() {
                 boton.style.background = '#112f58'
                 boton.disabled = true
             }
-            ataqueAleatorioJugador2()
+            if(ataquesJugador1.length === 5) {
+                debugger
+                enviarAtaques()
+            }
+           
         })
     })
 }
+
+function enviarAtaques(){
+   
+    console.log("entre a ENVIAR ATAQUES")
+    alert("enviar ataques")
+    fetch(`http://192.168.0.102:8080/mokepon/${jugadorId}/ataques`,{
+        method: "post",
+        headers: {
+            "Content-Type": "application.json"
+        },
+        body: JSON.stringify ({
+            ataques: ataquesJugador1
+        })  
+
+    })
+    intervalo = setInterval (obtenerAtaques, 50)
+}
+
+function obtenerAtaques(){
+    console.log("entre a OBTENER ATAQUES")
+    alert("obtener ataques")
+    fetch(`http://192.168.0.102:8080/mokepon/${enemigoId}/ataques`)
+        .then(function (res) {
+            if(res.ok) {
+                res.json()
+                .then (function ({ataques }){
+                    if (ataques.leng === 5){
+                       ataquesJugador2 = ataques
+                        combate()
+                    }
+                })
+            }
+
+        })
+
+}
+
 
 function ataqueAleatorioJugador2() { 
     // se le pasa por  parametro una variable referente al personaje que se va a usar a la funcion para que se quede con un personaje especifico.
@@ -289,6 +409,9 @@ function ataqueAleatorioJugador2() {
 }
 
 function combate() {
+    alert("entre al combate")
+    clearInterval(intervalo)
+
     if (arrayAtaqueJugador1[indiceArray] === arrayAtaqueJugador2[indiceArray]) {
         indexContrincantes(indiceArray, indiceArray)
         crearMensaje("Empate 🤔")
@@ -368,72 +491,8 @@ function aleatorio(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
-function pintarCanvas() {
-    personajeJugadorObjeto.x = personajeJugadorObjeto.x + personajeJugadorObjeto.velocidadX
-    personajeJugadorObjeto.y = personajeJugadorObjeto.y + personajeJugadorObjeto.velocidadY
 
-    lienzo.clearRect(0, 0, mapa.width, mapa.height)
-    lienzo.drawImage(
-        mapaBackground,
-        0,
-        0,
-        mapa.height,
-        mapa.width
-    )
-    personajeJugadorObjeto.pintarPersonaje()
-
-    enviarPosicion (personajeJugadorObjeto.x, personajeJugadorObjeto.y)
-
-
-        subzeroOponente.pintarPersonaje()
-        scorpionOponente.pintarPersonaje()
-        tremorOponente.pintarPersonaje()
-
-    if (personajeJugadorObjeto.velocidadX !== 0 || personajeJugadorObjeto.velocidadY !== 0) {
-        revisarColisiones(tremorOponente)
-        revisarColisiones(subzeroOponente)
-        revisarColisiones(scorpionOponente)
-    }
-}
-
-function enviarPosicion(x,y){
-fetch(`http://localhost:8080/mokepon/${jugadorId}/posicion`,{
-method:"post",
-headers: {
-    "Content-Type": "application/json"
-},
-body: JSON.stringify({
-        x,
-        y
-        })
-
-    })
-    .then(function(res){
-    if (res.ok){
-        res.json()
-        .then(function({enemigos}){
-            console.log(enemigos)
-            enemigos.forEach(function (enemigo){
-                let mokeponEnemigo = null 
-                const mokeponNombre = enemigo.mokepon.nombre || ""
-                if (mokeponNombre === "Scorpion"){
-                    mokeponEnemigo  = new Mokepon('Scorpion', './imagenes/Scorpion.png', 3, './imagenes/scorpion-head.png', 130, 90)
-                 } else if (mokeponNombre === "Subzero") {
-                    mokeponEnemigo = new Mokepon('Subzero', './imagenes/subzero.png', 3, './imagenes/subzero-head.png', 80, 330)
-                } else if (mokeponNombre === "Tremor") {
-                    mokeponEnemigo= new Mokepon('Tremor', './imagenes/Tremor.png', 3, './imagenes/tremor-head.png', 180, 10)
-                }
-
-                    mokeponEnemigo.x = enemigo.x
-                    mokeponEnemigo.y = enemigo.y
-                    mokeponEnemigo.pintarPersonaje()
-
-                 })
-            })
-         }
-    })
-}
-
+                
 //se cambio la velocidad de 5 pixeles a 20
 function moverDerecha() {
     personajeJugadorObjeto.velocidadX = 5
@@ -504,9 +563,11 @@ function revisarColisiones(personajeOponente) {
         arribaJugador1 > abajoJugador2 ||
         derechaJugador1 < izquierdaJugador2 ||
         izquierdaJugador1 > derechaJugador2
+        
     ) {
         return
     }
+    
     /* Esta wea te coge el frame donde se quedo en la variable "animationID" y se lo mete frio
      * a la funcion "cancelAnimationFrame" pa que se pare el jodio canva del diablo
      * 
@@ -518,6 +579,7 @@ function revisarColisiones(personajeOponente) {
 
     detenerMovimiento()
     clearInterval(intervalo)
+    personajeOponenteId = personajeOponente.Id
     sectionVerMapa.style.display = 'none'
     seccionSeleccionarAtaque.style.display = 'block'
     personajeJugador2 = personajeOponente
@@ -532,11 +594,8 @@ function setearAtaquesPersonajes() {
     ingresarAtaqueJugador(subzero, ataquesAgua)
     ingresarAtaqueJugador(scorpion, ataquesFuego)
     ingresarAtaqueJugador(tremor, ataquesTierra)
-    // ingresarAtaqueJugador(subzeroOponente, ataquesAgua)
-    // ingresarAtaqueJugador(scorpionOponente, ataquesFuego)
-    // ingresarAtaqueJugador(tremorOponente, ataquesTierra)
 }
 
 
 window.addEventListener('load', iniciarJuego)
-
+        
