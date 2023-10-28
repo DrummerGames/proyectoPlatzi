@@ -20,15 +20,15 @@
     <section id="ver-mapa">
         <h2 class="subtitulo">Explora el terreno</h2>
         <canvas id="mapa">  </canvas>
-        <button onmouseup="detenerMovimiento()" onmousedown="moverArriba()">Arriba</button> 
+        <button onmouseup="detenerMovimiento()"  onmousedown="moverArriba()" ontouchstart ="moverArriba()" ontouchend ="detenerMovimiento()">Arriba</button> 
         <div>
-            <button onmouseup="detenerMovimiento()" onmousedown="moverIzquierda()">Izquierda</button>
-            <button onmouseup="detenerMovimiento()" onmousedown="moverAbajo()">Abajo</button> 
-            <button onmouseup="detenerMovimiento()" onmousedown="moverDerecha()">Derecha</button> 
+            <button onmouseup="detenerMovimiento()" onmousedown="moverIzquierda()" ontouchstart ="moverIzquierda()" ontouchend ="detenerMovimiento()">Izquierda</button>
+            <button onmouseup="detenerMovimiento()" onmousedown="moverAbajo()"ontouchstart ="moverAbajo()" ontouchend ="detenerMovimiento()">Abajo</button> 
+            <button onmouseup="detenerMovimiento()" onmousedown="moverDerecha()"ontouchstart ="moverDerecha()" ontouchend ="detenerMovimiento()">Derecha</button> 
+
         </div>
     </section>
-    
-    <section class="ataque" id="seleccionar-ataque">
+    <section class="ataque" id="seleccionar-ataque">    
 
         <h2>Seleccione su ataque:</h2>
 
