@@ -28,7 +28,6 @@ class Jugador {
 
 }
 
-
 class Mokepon {
     constructor(nombre) {
         this.nombre = nombre
@@ -36,7 +35,6 @@ class Mokepon {
 }
 
 app.get("/unirse", (req, res) => {
-
     const id = `${Math.random()}`
     const jugador = new Jugador(id)
     jugadores.push(jugador)
@@ -77,11 +75,11 @@ app.post("/mokepon/:jugadorId/posicion",(req,res)=> {
 app.post("/mokepon/:jugadorId/ataques", (req, res) => {
     const jugadorId = req.params.jugadorId || ""
     const ataques = req.body.ataques || []
-
     const jugadorIndex = jugadores.findIndex((jugador) => jugadorId === jugador.id)
     if (jugadorIndex >= 0) {
         jugadores[jugadorIndex].asignarAtaques(ataques)
     }
+    
     res.end()
 })
 
@@ -90,9 +88,12 @@ app.get ("/mokepon/:jugadorId/ataques",(req, res)=>{
     const jugador = jugadores.find((jugador) => jugador.id === jugadorId)
     res.send({
         ataques: jugador.ataques || []
-        
     })
-
+})
+app.get ("/mokepon/enemigo/id",(req, res)=>{
+    res.send({
+        enemigoId: jugador.ataques || []
+    })
 })
 
 app.listen(8080, () => {

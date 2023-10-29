@@ -54,10 +54,9 @@ const equivalenciaAtaques = {
     '💧': 'AGUA'
 };
 
-
-let indiceArray = 0;
+let indiceArray = 0
 let jugadorId = null
-let personajeOponenteId = null
+let enemigoId = null
 let arrayPersonajes = []
 let personajesEnemigos = []
 let arrayAtaqueJugador1 = []
@@ -121,8 +120,6 @@ class Mokepon {
     }
 }
 
-
-
 let subzero = new Mokepon('Subzero', './imagenes/subzero.png', 3, './imagenes/subzero-head.png')
 let scorpion = new Mokepon('Scorpion', './imagenes/Scorpion.png', 3, './imagenes/scorpion-head.png')
 let tremor = new Mokepon('Tremor', './imagenes/Tremor.png', 3, './imagenes/tremor-head.png')
@@ -156,19 +153,18 @@ function iniciarJuego() {
     unirseAlJuego()
 }
 
-
-function unirseAlJuego(){
-    fetch("http://192.168.0.102:8080/unirse")
+function unirseAlJuego() {
+    fetch("http://localhost:8080/unirse")
         .then(function (res){
-        if (res.ok){
+        if (res.ok) {
              res.text()
             .then(function(respuesta){
-            console.log(respuesta);
-             jugadorId= respuesta
+                jugadorId = respuesta
             })
          }
     })
 }
+
 function seleccionarPersonajeJugador1() {
     let inputsubzeroCheck = document.getElementById('Subzero').checked
     let inputscorpionCheck = document.getElementById('Scorpion').checked
@@ -195,32 +191,26 @@ function seleccionarPersonajeJugador1() {
         return
     }
     
-    seleccionarPersonaje(personajeJugador1)
-
-    extraerAtaques(personajeJugador1)   
+    extraerAtaques()   
     iniciarMapa()
+    enviarSeleccionPersonaje()
     sectionVerMapa.style.display = 'flex'
-    
 }
 
-function seleccionarPersonaje(personajeJugador1){
-    alert ("ENTRE A SELECCIONAR PERSONAJES")
-    fetch(`http://192.168.0.102:8080/mokepon/${jugadorId}`,{
+function enviarSeleccionPersonaje() {
+    fetch(`http://localhost:8080/mokepon/${jugadorId}`, {
         method:"post",
         headers: {
             "Content-Type": "application/json"
         }, 
         body: JSON.stringify({
-        mokepon:personajeJugador1
-
+            mokepon: personajeJugador1
+        })
     })
-})
- 
 
 }
 
 function pintarCanvas() {
- 
     personajeJugadorObjeto.x = personajeJugadorObjeto.x + personajeJugadorObjeto.velocidadX
     personajeJugadorObjeto.y = personajeJugadorObjeto.y + personajeJugadorObjeto.velocidadY
 
@@ -233,10 +223,9 @@ function pintarCanvas() {
         mapa.width
     )
     personajeJugadorObjeto.pintarPersonaje()
-
     enviarPosicion(personajeJugadorObjeto.x, personajeJugadorObjeto.y)
 
- personajesEnemigos.forEach(function (mokepon){
+ personajesEnemigos.forEach(function (mokepon) {
   if (mokepon != undefined) {
     mokepon.pintarPersonaje()
     revisarColisiones(mokepon)
@@ -244,49 +233,46 @@ function pintarCanvas() {
 })
 }
 
-function enviarPosicion(x,y){
-    console.log ("entre a enviar posicion")
+function enviarPosicion(x,y) {
     console.trace()
-fetch(`http://192.168.0.102:8080/mokepon/${jugadorId}/posicion`,{
+    fetch(`http://localhost:8080/mokepon/${jugadorId}/posicion`, {
         method:"post",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-                x,
-                y
-            })
-
+            x,
+            y
+        })
     })
 
-    .then(function(res){
-    if (res.ok){
-        return res.json().then(function({ enemigos }) {
-            console.log(enemigos);
-            personajesEnemigos = enemigos.map(function (enemigo){
-                let mokeponEnemigo = null 
-                if(enemigo.mokepon !== undefined) {
-             
-                const mokeponNombre = enemigo.mokepon.nombre;
-                switch (mokeponNombre){
-                case "Scorpion":
-                    mokeponEnemigo  = new Mokepon('Scorpion', './imagenes/Scorpion.png', 3, './imagenes/scorpion-head.png', 130, 90, enemigo.id)
-                    break;
-                case "Subzero":
-                      mokeponEnemigo = new Mokepon('Subzero', './imagenes/subzero.png', 3, './imagenes/subzero-head.png', 80, 330 , enemigo.id)
-                    break
-                        case"Tremor":
-                         mokeponEnemigo= new Mokepon('Tremor', './imagenes/Tremor.png', 3, './imagenes/tremor-head.png', 180, 10, enemigo.id)
-                    break;
-                     default:combate
-                    break;
-                     }
-                    mokeponEnemigo.x = enemigo.x
-                    mokeponEnemigo.y = enemigo.y
+    .then(function(res) {
+        if (res.ok) {
+            return res.json().then(function({ enemigos }) {            
+                personajesEnemigos = enemigos.map(function (enemigo) {
+                    let mokeponEnemigo = null 
+                    
+                    if(enemigo.mokepon !== undefined) {
+                        const mokeponNombre = enemigo.mokepon.nombre;
+                        switch (mokeponNombre) {
+                            case "Scorpion":
+                                mokeponEnemigo  = new Mokepon('Scorpion', './imagenes/Scorpion.png', 3, './imagenes/scorpion-head.png', enemigo.id, 130, 90)
+                                break;
+                            case "Subzero":
+                                mokeponEnemigo = new Mokepon('Subzero', './imagenes/subzero.png', 3, './imagenes/subzero-head.png', enemigo.id, 80, 330)
+                                break
+                                    case"Tremor":
+                                    mokeponEnemigo= new Mokepon('Tremor', './imagenes/Tremor.png', 3, './imagenes/tremor-head.png', enemigo.id, 180, 10)
+                                break;
+                                default:combate
+                                break;
+                        }
+                        mokeponEnemigo.x = enemigo.x
+                        mokeponEnemigo.y = enemigo.y
                     }
                     return mokeponEnemigo
                 });
-             })        
+            })        
         }
     });
 }
@@ -295,7 +281,7 @@ function mostrarSeccionAtaque() {
     seccionSeleccionarPersonaje.style.display = 'none'
 }
 
-function extraerAtaques(personajeJugador1) {
+function extraerAtaques() {
     let ataques
     for (let i = 0; i < arrayPersonajes.length; i++) {
         if (personajeJugador1 === arrayPersonajes[i].nombre) {
@@ -325,14 +311,14 @@ function seleccionarPersonajeOponente() {
     spanPersonajeOponente.innerHTML = personajeJugador2.nombre
     ataquesJugador2 = personajeJugador2.ataques
     secuenciaAtaques()
-
 }
 
 function secuenciaAtaques() {
-   console.trace ()
-    console.log("entre a SECUENCIA ATAQUES")
+    console.trace()
     botonesAtaque.forEach((boton) => {
         boton.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             if (e.target.textContent === '🔥') {
                 arrayAtaqueJugador1.push('FUEGO')
                 boton.style.background = '#112f58'
@@ -346,49 +332,42 @@ function secuenciaAtaques() {
                 boton.style.background = '#112f58'
                 boton.disabled = true
             }
-            if(ataquesJugador1.length === 5) {
-                debugger
+            if( arrayAtaqueJugador1.length === 5 ) {
                 enviarAtaques()
             }
-           
         })
     })
 }
 
-function enviarAtaques(){
-   
-    console.log("entre a ENVIAR ATAQUES")
-    alert("enviar ataques")
-    fetch(`http://192.168.0.102:8080/mokepon/${jugadorId}/ataques`,{
+function enviarAtaques() {
+    fetch(`http://localhost:8080/mokepon/${jugadorId}/ataques`,{
         method: "post",
         headers: {
-            "Content-Type": "application.json"
+            "Content-Type": "application/json"
         },
         body: JSON.stringify ({
-            ataques: ataquesJugador1
+            ataques: arrayAtaqueJugador1
         })  
 
     })
     intervalo = setInterval (obtenerAtaques, 50)
+    fetch(ataquesJugador1)
 }
 
 function obtenerAtaques(){
-    console.log("entre a OBTENER ATAQUES")
-    alert("obtener ataques")
-    fetch(`http://192.168.0.102:8080/mokepon/${enemigoId}/ataques`)
+    fetch(`http://localhost:8080/mokepon/${enemigoId}/ataques`)
         .then(function (res) {
             if(res.ok) {
                 res.json()
-                .then (function ({ataques }){
-                    if (ataques.leng === 5){
-                       ataquesJugador2 = ataques
+                .then (function ({ ataques }) {
+                    if (ataques.length === 5) {
+                        arrayAtaqueJugador2 = ataques
                         combate()
                     }
                 })
             }
 
         })
-
 }
 
 
@@ -409,39 +388,37 @@ function ataqueAleatorioJugador2() {
 }
 
 function combate() {
-    alert("entre al combate")
     clearInterval(intervalo)
 
-    if (arrayAtaqueJugador1[indiceArray] === arrayAtaqueJugador2[indiceArray]) {
-        indexContrincantes(indiceArray, indiceArray)
-        crearMensaje("Empate 🤔")
-    } else if (arrayAtaqueJugador1[indiceArray] === "TIERRA" && arrayAtaqueJugador2[indiceArray] === "AGUA") {
-        indexContrincantes(indiceArray, indiceArray)
-        victoriasJugador1++
-        spanVictoriasJugador1.innerHTML = victoriasJugador1
-        crearMensaje("HAS GANADO! 🎉")
-    } else if (arrayAtaqueJugador1[indiceArray] === "FUEGO" && arrayAtaqueJugador2[indiceArray] === "TIERRA") {
-        indexContrincantes(indiceArray, indiceArray)
-        victoriasJugador1++
-        spanVictoriasJugador1.innerHTML = victoriasJugador1
-        crearMensaje("HAS GANADO! 🎉")
-    } else if (arrayAtaqueJugador1[indiceArray] === "AGUA" && arrayAtaqueJugador2[indiceArray] === "FUEGO") {
-        indexContrincantes(indiceArray, indiceArray)
-        victoriasJugador1++
-        spanVictoriasJugador1.innerHTML = victoriasJugador1
-        crearMensaje("HAS GANADO! 🎉")
-    } else {
-        indexContrincantes(indiceArray, indiceArray)
-        crearMensaje("Has perdido 💀")
-        seccionReiniciar.style.display = 'block'
-        victoriasJugador2++
-        spanVictoriasJugador2.innerHTML = victoriasJugador2
+    for(let indiceArray = 0; indiceArray < arrayAtaqueJugador1.length; indiceArray++) {
+        if (arrayAtaqueJugador1[indiceArray] === arrayAtaqueJugador2[indiceArray]) {
+            indexContrincantes(indiceArray, indiceArray)
+            crearMensaje("Empate 🤔")
+        } else if (arrayAtaqueJugador1[indiceArray] === "TIERRA" && arrayAtaqueJugador2[indiceArray] === "AGUA") {
+            indexContrincantes(indiceArray, indiceArray)
+            victoriasJugador1++
+            spanVictoriasJugador1.innerHTML = victoriasJugador1
+            crearMensaje("HAS GANADO! 🎉")
+        } else if (arrayAtaqueJugador1[indiceArray] === "FUEGO" && arrayAtaqueJugador2[indiceArray] === "TIERRA") {
+            indexContrincantes(indiceArray, indiceArray)
+            victoriasJugador1++
+            spanVictoriasJugador1.innerHTML = victoriasJugador1
+            crearMensaje("HAS GANADO! 🎉")
+        } else if (arrayAtaqueJugador1[indiceArray] === "AGUA" && arrayAtaqueJugador2[indiceArray] === "FUEGO") {
+            indexContrincantes(indiceArray, indiceArray)
+            victoriasJugador1++
+            spanVictoriasJugador1.innerHTML = victoriasJugador1
+            crearMensaje("HAS GANADO! 🎉")
+        } else {
+            indexContrincantes(indiceArray, indiceArray)
+            crearMensaje("Has perdido 💀")
+            seccionReiniciar.style.display = 'block'
+            victoriasJugador2++
+            spanVictoriasJugador2.innerHTML = victoriasJugador2
+        }
     }
 
-    if (arrayAtaqueJugador1.length === 5) {
-        veredicto()
-    }
-    indiceArray++;
+    veredicto()
 }
 
 function indexContrincantes(jugador, oponente) {
@@ -539,6 +516,7 @@ function iniciarMapa() {
     window.addEventListener('keydown', sePrecionoUnaTecla);
     window.addEventListener('keyup', detenerMovimiento)     
 }
+
 function obtenerPersonajeElegido() {
     for (let i = 0; i < arrayPersonajes.length; i++) {
         if (personajeJugador1 === arrayPersonajes[i].nombre) {
@@ -579,7 +557,7 @@ function revisarColisiones(personajeOponente) {
 
     detenerMovimiento()
     clearInterval(intervalo)
-    personajeOponenteId = personajeOponente.Id
+    enemigoId = personajeOponente.id
     sectionVerMapa.style.display = 'none'
     seccionSeleccionarAtaque.style.display = 'block'
     personajeJugador2 = personajeOponente
